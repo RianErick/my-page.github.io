@@ -1,26 +1,55 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import {
+  NgxTimelineEvent,
+  NgxTimelineItemPosition,
+  NgxTimelineModule,
+} from '@frxjs/ngx-timeline';
 import * as THREE from 'three';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, NgxTimelineModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
   private particles: THREE.Points | undefined;
+  events: Array<NgxTimelineEvent> = new Array<NgxTimelineEvent>();
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.createScene();
     this.createParticles();
     this.animate();
+    this.createTimeLine();
+  }
+  createTimeLine() {
+    this.events.push(
+      {
+        title: 'Student at Computer Science at IFCE, Brazil',
+        description: 'Computing disciplines',
+        itemPosition: NgxTimelineItemPosition.ON_RIGHT,
+        timestamp: new Date(),
+      },
+      {
+        title: 'Software Developer at Embrapi',
+        description: 'Java - Angular',
+        itemPosition: NgxTimelineItemPosition.ON_LEFT,
+        timestamp: new Date(),
+      },
+      {
+        title: 'Software Developer at Gera System',
+        description: 'Java - Angular - Flutter',
+        itemPosition: NgxTimelineItemPosition.ON_LEFT,
+        timestamp: new Date(),
+      }
+    );
   }
 
   createScene() {
