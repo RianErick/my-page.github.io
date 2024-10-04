@@ -31,6 +31,7 @@ export class AppComponent implements OnInit {
     this.animate();
     this.createTimeLine();
   }
+
   createTimeLine() {
     this.events.push(
       {
