@@ -4,6 +4,7 @@ import {
   NgxTimelineEvent,
   NgxTimelineItemPosition,
   NgxTimelineModule,
+  NgxTimelineOrientation,
 } from '@frxjs/ngx-timeline';
 import * as THREE from 'three';
 
@@ -19,7 +20,8 @@ export class AppComponent implements OnInit {
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
   private particles: THREE.Points | undefined;
-  events: Array<NgxTimelineEvent> = new Array<NgxTimelineEvent>();
+   events: Array<NgxTimelineEvent> = new Array<NgxTimelineEvent>();
+   orientation: NgxTimelineOrientation = NgxTimelineOrientation.VERTICAL;
 
   constructor() {}
 
@@ -35,19 +37,25 @@ export class AppComponent implements OnInit {
         title: 'Student at Computer Science at IFCE, Brazil',
         description: 'Computing disciplines',
         itemPosition: NgxTimelineItemPosition.ON_RIGHT,
-        timestamp: new Date(),
+        timestamp: new Date("August 15, 2022 07:00:00"),
       },
       {
         title: 'Software Developer at Embrapi',
         description: 'Java - Angular',
         itemPosition: NgxTimelineItemPosition.ON_LEFT,
-        timestamp: new Date(),
+        timestamp: new Date("September 21, 2023 07:00:00"),
       },
       {
         title: 'Software Developer at Gera System',
         description: 'Java - Angular - Flutter',
         itemPosition: NgxTimelineItemPosition.ON_LEFT,
-        timestamp: new Date(),
+        timestamp: new Date("December 20, 2023 07:00:00"),
+      },
+      {
+        title: 'Software Developer at CCLI Consulting',
+        description: 'Java - Angular ',
+        itemPosition: NgxTimelineItemPosition.ON_RIGHT,
+        timestamp: new Date("August 15, 2024 07:00:00"),
       }
     );
   }
