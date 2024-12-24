@@ -1,17 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import {
-  NgxTimelineEvent,
-  NgxTimelineItemPosition,
-  NgxTimelineModule,
-  NgxTimelineOrientation,
-} from '@frxjs/ngx-timeline';
+import {Component, OnInit} from '@angular/core';
+import {NgxTimelineModule,} from '@frxjs/ngx-timeline';
 import * as THREE from 'three';
+import {PointsMaterialParameters} from 'three';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgxTimelineModule],
+  imports: [NgxTimelineModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -20,45 +15,21 @@ export class AppComponent implements OnInit {
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
   private particles: THREE.Points | undefined;
-   events: Array<NgxTimelineEvent> = new Array<NgxTimelineEvent>();
-   orientation: NgxTimelineOrientation = NgxTimelineOrientation.VERTICAL;
 
-  constructor() {}
+
+  constructor() {
+  }
 
   ngOnInit(): void {
     this.createScene();
     this.createParticles();
     this.animate();
-    this.createTimeLine();
   }
 
-  createTimeLine() {
-    this.events.push(
-      {
-        title: 'Student at Computer Science at IFCE, Brazil',
-        description: 'Computing disciplines',
-        itemPosition: NgxTimelineItemPosition.ON_RIGHT,
-        timestamp: new Date("August 15, 2022 07:00:00"),
-      },
-      {
-        title: 'Software Developer at Embrapi',
-        description: 'Java - Angular',
-        itemPosition: NgxTimelineItemPosition.ON_LEFT,
-        timestamp: new Date("September 21, 2023 07:00:00"),
-      },
-      {
-        title: 'Software Developer at Gera System',
-        description: 'Java - Angular - Flutter',
-        itemPosition: NgxTimelineItemPosition.ON_LEFT,
-        timestamp: new Date("December 20, 2023 07:00:00"),
-      },
-      {
-        title: 'Software Developer at CCLI Consulting',
-        description: 'Java - Angular ',
-        itemPosition: NgxTimelineItemPosition.ON_RIGHT,
-        timestamp: new Date("August 15, 2024 07:00:00"),
-      }
-    );
+  pointsMaterialParameters: PointsMaterialParameters = {
+    color: 0xffffff,
+    size: 0.02,
+    opacity: 1000,
   }
 
   createScene() {
@@ -75,25 +46,35 @@ export class AppComponent implements OnInit {
       this.camera.position.z = 6;
       this.camera.position.x = 0;
 
-      this.renderer = new THREE.WebGLRenderer({ canvas });
+      this.renderer = new THREE.WebGLRenderer({canvas});
       this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
   }
 
-  createParticles() {
-    const particleCount = 1000;
-    const particlesGeometry = new THREE.BufferGeometry();
+  rotationParticles(particleCount: number , particlesPosition: Float32Array) {
+    const radius = 3
+    for (let i = 0; i < particleCount; i++) {
+      const phi = Math.acos(2 * Math.random() - 1); // Ângulo azimutal
+      const theta = Math.random() * 2 * Math.PI; // Ângulo polar
 
-    const particlesMaterial = new THREE.PointsMaterial({
-      color: 0xffffff,
-      size: 0.02,
-    });
+      // Convertendo coordenadas esféricas para cartesianas
+      const x = radius * Math.sin(phi) * Math.cos(theta);
+      const y = radius * Math.sin(phi) * Math.sin(theta);
+      const z = radius * Math.cos(phi);
 
-    const particlesPosition: Float32Array = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount * 3; i++) {
-      particlesPosition[i] = (Math.random() - 0.5) * 10;
+      particlesPosition[i * 3] = x;
+      particlesPosition[i * 3 + 1] = y;
+      particlesPosition[i * 3 + 2] = z;
     }
+
+  }
+
+  createParticles() {
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesMaterial = new THREE.PointsMaterial(this.pointsMaterialParameters);
+    const particlesPosition: Float32Array = new Float32Array(1000 * 3);
+
+    this.rotationParticles(1000, particlesPosition)
 
     particlesGeometry.setAttribute(
       'position',
@@ -106,10 +87,13 @@ export class AppComponent implements OnInit {
 
   animate = () => {
     requestAnimationFrame(this.animate);
+
     if (this.particles) {
-      this.particles.rotation.y += 0.001;
       this.particles.rotation.x += 0.001;
+      this.particles.rotation.y += 0.001;
+      this.particles.rotation.z += 0.001;
     }
+
     this.renderer.render(this.scene, this.camera);
   };
 }
